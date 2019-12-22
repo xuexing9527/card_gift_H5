@@ -1,0 +1,64 @@
+div.header
+        div.header-top
+            ul
+                li
+                  a(href='#')
+                   <i></i>
+                   span 0件
+                li
+                  a(href='/login') LOG IN 登录
+                li#register
+                  a(href='/register') SIGN UP 注册
+            div.tips
+        hr
+        div.header-btm#headerNav
+            ul
+                li
+                  a(href='/')
+                    span Nos Produits
+                    span 全部产品
+                b
+                li
+                    a(href='/napoleon')
+                        span Napoleon
+                        span 拿破仑系列
+                b
+                li
+                    a(href='/product_details')
+                        span Nouveaute
+                        span 最新活动
+                b
+                li
+                    a(href='/userCenter')
+                        span Mon cake
+                        span 会员中心
+            div.tel
+                span
+                   a
+                    <i></i>
+                    span 898-0305
+                span
+                   a(href='#')
+                    <i></i>
+                    span 六环以内部分区域满100包邮
+            div.address
+                i
+                div
+                    p
+                        a(href='#') 北京市
+                    ul
+                        li.active
+                             a(href='#') 上海市
+                        li
+                             a(href='#') 杭州市
+                        li
+                             a(href='#') 苏州市
+append javascript
+    script(src='js/header.js')
+    script.
+        $('#register').click(function () {
+            // 获取当前页面的路由地址
+            const prePath = location.pathname
+            // 跳转的时候拼接
+            location = '/register?prePath=' + prePath + '_'
+        })
