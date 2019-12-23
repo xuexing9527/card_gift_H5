@@ -40,7 +40,7 @@ router.post('/login', function *(next) {
 
     yield userModel.findDataByCardCode(card_code).then((result) => {
         // console.log(result)
-        // console.log(result[0])
+        console.log(result[0])
         if (!result.length) {
             ctx.body = resBody(1, '卡号错误, 请核对卡号信息!');
             return;
@@ -87,6 +87,35 @@ router.get('/detail', function *(next) {
     } else {
         ctx.body = resBody(10001, '登录失效，请重新登录!');
     }
+});
+
+router.post('/add', function *(next) {
+  const ctx = this;
+  const { token } = ctx.header;
+  const info = jwt.decode(token)
+  if (token && info) {
+    const { card_code } = info;
+    const { phone_number, address, consignee } = ctx.request.body;
+    // 校验
+    if (!phone_number) {
+      ctx.body = resBody(1, '手机号不能为空!');
+      return;
+    }
+    if (!address) {
+      ctx.body = resBody(1, '收货地址不能为空!');
+      return;
+    }
+    if (!consignee) {
+      ctx.body = resBody(1, '收货人不能为空!');
+      return;
+    }
+    yield userModel.addDetail({ phone_number, address, consignee, card_code }).then((result) => {
+      console.log(result);
+      ctx.body = resBody(0, '添加成功!');
+    })
+  } else {
+    ctx.body = resBody(10001, '登录失效，请重新登录!');
+  }
 });
 
 module.exports = router;

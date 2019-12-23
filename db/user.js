@@ -30,7 +30,7 @@ let query = function( sql, values ) {
 }
 
 // 用户表
-gift_card_245 =
+const gift_card_245 =
     `create table if not exists gift_card_245(
  id INT NOT NULL AUTO_INCREMENT,
  consignee VARCHAR(255) NOT NULL,
@@ -44,6 +44,8 @@ gift_card_245 =
  PRIMARY KEY ( id )
 );`
 
+// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
+
 // 创建表
 let createTable = function( sql ) {
     return query( sql, [] )
@@ -53,15 +55,21 @@ let createTable = function( sql ) {
 createTable(gift_card_245)
 
 // 注册用户
-let insertData = function( value ) {
-    let _sql = "insert into users(name,pass) values(?,?);"
+const insertData = function( value ) {
+    const _sql = "insert into users(name,pass) values(?,?);"
     return query( _sql, value )
 }
 
 // 通过名字查找用户
-let findDataByCardCode = function (card_code) {
-    let _sql = `SELECT * from gift_card_245 where card_code="${card_code}"`
+const findDataByCardCode = function (card_code) {
+    const _sql = `SELECT * from gift_card_245 where card_code="${card_code}"`
     return query(_sql)
+}
+
+const addDetail = function (param) {
+    const { address, phone_number, consignee, card_code } = param
+    const sql = `UPDATE gift_card_245 SET address = ${address}, phone_number = ${phone_number}, consignee = ${consignee} WHERE card_code = ${card_code};`
+    return query(sql)
 }
 
 module.exports={
@@ -69,4 +77,5 @@ module.exports={
     createTable,
     findDataByCardCode,
     insertData,
+    addDetail,
 }
