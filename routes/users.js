@@ -70,22 +70,20 @@ router.post('/login', function *(next) {
 router.get('/detail', function *(next) {
     const ctx = this;
     const { token } = ctx.header;
-    if (token) {
-        const info = jwt.decode(token)
+    const info = jwt.decode(token)
+    if (token && info) {
         const { card_code } = info;
-        if (card_code) {
-            yield userModel.findDataByCardCode(card_code).then((result) => {
-                if (!result.length) {
-                    ctx.body = resBody(1, '卡号错误, 请核对卡号信息!');
-                    return;
-                }
-                if (result.length > 1) {
-                    ctx.body = resBody(1, '卡号存在多个!');
-                    return;
-                }
-                ctx.body = resBody(0, result[0]);
-            })
-        }
+        yield userModel.findDataByCardCode(card_code).then((result) => {
+            if (!result.length) {
+                ctx.body = resBody(1, '卡号错误, 请核对卡号信息!');
+                return;
+            }
+            if (result.length > 1) {
+                ctx.body = resBody(1, '卡号存在多个!');
+                return;
+            }
+            ctx.body = resBody(0, result[0]);
+        })
     } else {
         ctx.body = resBody(10001, '登录失效，请重新登录!');
     }
