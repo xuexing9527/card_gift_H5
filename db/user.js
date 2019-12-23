@@ -10,7 +10,6 @@ var pool  = mysql.createPool({
 
 // 查表并返回数据
 let query = function( sql, values ) {
-
     return new Promise(( resolve, reject ) => {
         pool.getConnection(function(err, connection) {
             if (err) {
@@ -28,15 +27,20 @@ let query = function( sql, values ) {
             }
         })
     })
-
 }
 
 // 用户表
-users=
-    `create table if not exists users(
+gift_card_245 =
+    `create table if not exists gift_card_245(
  id INT NOT NULL AUTO_INCREMENT,
- name VARCHAR(100) NOT NULL,
- pass VARCHAR(40) NOT NULL,
+ consignee VARCHAR(255) NOT NULL,
+ phone_number VARCHAR(255) NOT NULL,
+ address VARCHAR(255) NOT NULL,
+ ship_status INT(255) NOT NULL,
+ tracking_number VARCHAR(255) NOT NULL,
+ card_code VARCHAR(255) NOT NULL,
+ card_pwd VARCHAR(255) NOT NULL,
+ company_code VARCHAR(255) NOT NULL,
  PRIMARY KEY ( id )
 );`
 
@@ -46,7 +50,7 @@ let createTable = function( sql ) {
 }
 
 // 建表
-createTable(users)
+createTable(gift_card_245)
 
 // 注册用户
 let insertData = function( value ) {
@@ -55,17 +59,14 @@ let insertData = function( value ) {
 }
 
 // 通过名字查找用户
-let findDataByName = function (  name ) {
-    let _sql = `
-    SELECT * from users
-      where name="${name}"
-      `
-    return query( _sql)
+let findDataByCardCode = function (card_code) {
+    let _sql = `SELECT * from gift_card_245 where card_code="${card_code}"`
+    return query(_sql)
 }
 
 module.exports={
     query,
     createTable,
+    findDataByCardCode,
     insertData,
-    findDataByName
 }

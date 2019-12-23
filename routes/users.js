@@ -1,8 +1,9 @@
 var router = require('koa-router')();
-var userModel=require('../db/user');
+var userModel = require('../db/user');
 var async = require('async');
 // 加密
-var md5=require('md5')
+var md5 = require('md5')
+var jwt = require('jsonwebtoken');
 
 router.prefix('/users');
 
@@ -14,213 +15,80 @@ router.get('/bar', function *(next) {
     this.body = 'this is a users/bar response!';
 });
 
+const resBody = (code, msg) => ({ code, msg });
 
-// POST '/signup' 注册页
-router.post('/register', function *(next) {
-    const ctx = this
-    console.log(ctx)
-    console.log(ctx.request.body)
-    var user={
-        uname:ctx.request.body.uname,
-        pwd:ctx.request.body.pwd,
-        rePwd:ctx.request.body.rePwd
-    }
-    if(!user.uname){
-        ctx.body={
-            status: 0,
-            msg: '用户名不能为空或格式不正确'
-        };
+// POST '/login' 登录页
+router.post('/login', function *(next) {
+    const ctx = this;
+    const { card_code, card_pwd, company_code } = ctx.request.body;
+
+    // console.log(ctx.request.body);
+    // console.log(ctx.request);
+
+    if(!card_code){
+        ctx.body = resBody(1, '卡号不能为空');
         return
     }
-    if(!user.pwd){
-        ctx.body={
-            status: 0,
-            msg: '密码不能为空或格式不正确'
-        };
+    if(!card_pwd){
+        ctx.body = resBody(1, '密码不能为空');
         return
     }
-    if(!user.rePwd){
-        ctx.body={
-            status: 0,
-            msg: '重复密码不能为空或格式不正确'
-        };
+    if(!company_code){
+        ctx.body = resBody(1, '企业码不能为空');
         return
     }
-    yield userModel.findDataByName(user.uname)
-        .then(result=>{
-            // var res=JSON.parse(JSON.stringify(reslut))
-            console.log(result)
 
-            if (result.length){
-                try {
-                    throw Error('用户存在')
-                }catch (error){
-                    //处理err
-                    console.log(error)
-                }
-                ctx.body={
-                    status: 1,
-                    msg: '用户已存在'
-                };
-            }else if (user.pwd!==user.rePwd|| user.pass==''){
-                ctx.body={
-                    status: 2,
-                    msg: '两次密码输入不一致'
-                };
-            }else if(!result.length && !(user.pwd!==user.rePwd|| user.pass=='')){
-                ctx.body={
-                    status: 3,
-                    msg: '注册成功！'
-
-                };
-                console.log('注册成功')
-                // ctx.session.user=ctx.request.body.name
-                userModel.insertData([ctx.request.body.uname,md5(ctx.request.body.pwd)])
-            }else{
-                ctx.body={
-                    status: 0,
-                    msg: '未知错误！'
-
-                };
-            }
-        })
+    yield userModel.findDataByCardCode(card_code).then((result) => {
+        // console.log(result)
+        // console.log(result[0])
+        if (!result.length) {
+            ctx.body = resBody(1, '卡号错误, 请核对卡号信息!');
+            return;
+        }
+        if (result.length > 1) {
+            ctx.body = resBody(1, '卡号存在多个!');
+            return;
+        }
+        if (card_pwd !== result[0].card_pwd) {
+            ctx.body = resBody(1, '密码错误!');
+            return;
+        }
+        if (company_code !== result[0].company_code) {
+            ctx.body = resBody(1, '企业码错误!');
+            return;
+        }
+        // ctx.session.card_code = card_code;
+        const secret = 'xx';
+        const payload = { card_code };
+        const token = jwt.sign(payload, secret, { expiresIn:  '30d' });
+        console.log(token);
+        console.log(jwt.decode(token));
+        ctx.body = resBody(0, { token: token });
+    })
 });
 
-// cake
-router.get('/cake', function *(next) {
-    this.body = {
-        "allCake": [
-    { "id": 1,
-        "src": "images/index/list_2177_1.jpg",
-        "price": "2磅/318 RMB",
-        "score": "28",
-        "iconSrc": "images/index/xp.png",
-        "titleEn": "Blanc Amant",
-        "titleCh": "白色恋人",
-    },
-    {
-        "id": 2,
-        "src": "images/index/1.jpg",
-        "price": "2磅/318 RMB",
-        "score": "6",
-        "iconSrc": "images/index/rq.png",
-        "titleEn": "Napoléon aux fraises",
-        "titleCh": "拿破仑莓恋",
-    },
-    {
-        "id": 3,
-        "src": "images/index/list_1959_1.jpg",
-        "price": "2磅/298 RMB",
-        "score": "20",
-        "iconSrc": "",
-        "titleEn": "Fraise-Chantilly",
-        "titleCh": "鲜莓印雪",
-    },
-    {
-        "id": 4,
-        "src": "images/index/1(4).jpg",
-        "price": "2磅/298 RMB",
-        "score": "3",
-        "iconSrc": "images/index/rq.png",
-        "titleEn": "Velour rouge",
-        "titleCh": "蔓越莓红丝绒",
-    },
-    {
-        "id": 5,
-        "src": "images/index/list_3116_1.jpg",
-        "price": "2磅/298 RMB",
-        "score": "",
-        "iconSrc": "images/index/xp.png",
-        "titleEn": "Histoire de pêche",
-        "titleCh": "蜜桃物语",
-    },
-    {
-        "id": 6,
-        "src": "images/index/1 (1).jpg",
-        "price": "2磅/298 RMB",
-        "score": "",
-        "iconSrc": "images/index/xp.png",
-        "titleEn": "Blanche gamine",
-        "titleCh": "布兰奇卡曼"	,
-    },
-    {
-        "id": 7,
-        "src": "images/index/list_2132_1.jpg",
-        "price": "2磅/318 RMB",
-        "score": "",
-        "iconSrc": "",
-        "titleEn": "Mont Blanc",
-        "titleCh": "朗姆醇栗",
-    },
-    {
-        "id": 8,
-        "src": "images/index/1(5).jpg",
-        "price": "2.5磅/318 RMB",
-        "score": "",
-        "iconSrc": "",
-        "titleEn": "lapin détendu",
-        "titleCh": "安逸兔",
-    }
-],
-    "napoleonCake": [
-        {
-            "id": 2,
-            "src": "images/index/1.jpg",
-            "price": "2磅/318 RMB",
-            "score": "6",
-            "iconSrc": "images/index/rq.png",
-            "titleEn": "Napoléon aux fraises",
-            "titleCh": "拿破仑莓恋",
-        },
-        {
-            "id": 7,
-            "src": "images/index/list_2132_1.jpg",
-            "price": "2磅/318 RMB",
-            "score": "",
-            "iconSrc": "",
-            "titleEn": "Mont Blanc",
-            "titleCh": "朗姆醇栗",
+router.get('/detail', function *(next) {
+    const ctx = this;
+    const { token } = ctx.header;
+    if (token) {
+        const info = jwt.decode(token)
+        const { card_code } = info;
+        if (card_code) {
+            yield userModel.findDataByCardCode(card_code).then((result) => {
+                if (!result.length) {
+                    ctx.body = resBody(1, '卡号错误, 请核对卡号信息!');
+                    return;
+                }
+                if (result.length > 1) {
+                    ctx.body = resBody(1, '卡号存在多个!');
+                    return;
+                }
+                ctx.body = resBody(0, result[0]);
+            })
         }
-    ],
-        "milkCake": [
-            {
-                "id": 6,
-                "src": "images/index/1.jpg",
-                "price": "2磅/318 RMB",
-                "score": "6",
-                "iconSrc": "images/index/rq.png",
-                "titleEn": "Napoléon aux fraises",
-                "titleCh": "拿破仑莓恋",
-            },
-            {
-                "id": 7,
-                "src": "images/index/list_2132_1.jpg",
-                "price": "2磅/318 RMB",
-                "score": "",
-                "iconSrc": "",
-                "titleEn": "Mont Blanc",
-                "titleCh": "朗姆醇栗",
-            },
-            {
-                "id": 3,
-                "src": "images/index/list_1959_1.jpg",
-                "price": "2磅/298 RMB",
-                "score": "20",
-                "iconSrc": "",
-                "titleEn": "Fraise-Chantilly",
-                "titleCh": "鲜莓印雪",
-            },
-            {
-                "id": 4,
-                "src": "images/index/1(4).jpg",
-                "price": "2磅/298 RMB",
-                "score": "3",
-                "iconSrc": "images/index/rq.png",
-                "titleEn": "Velour rouge",
-                "titleCh": "蔓越莓红丝绒",
-            }
-        ]
-}
-})
+    } else {
+        ctx.body = resBody(10001, '登录失效，请重新登录!');
+    }
+});
 
 module.exports = router;
