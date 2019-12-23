@@ -68,7 +68,7 @@ const findDataByCardCode = function (card_code) {
 
 const addDetail = function (param) {
     const { address, phone_number, consignee, card_code } = param
-    const sql = `UPDATE gift_card_245 SET address = ${address}, phone_number = ${phone_number}, consignee = ${consignee} WHERE card_code = ${card_code};`
+    const sql = `UPDATE gift_card_245 SET address = "${address}", phone_number = "${phone_number}", consignee = "${consignee}" WHERE card_code = "${card_code}";`
     return query(sql)
 }
 
