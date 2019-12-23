@@ -42,7 +42,7 @@ const gift_card_245 =
  card_pwd VARCHAR(255) NOT NULL,
  company_code VARCHAR(255) NOT NULL,
  PRIMARY KEY ( id )
-);`
+)CHARACTER SET utf8 COLLATE utf8_general_ci;`
 
 // UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 
