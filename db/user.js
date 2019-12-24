@@ -62,7 +62,7 @@ const insertData = function( value ) {
 
 // 通过名字查找用户
 const findDataByCardCode = function (card_code) {
-    const _sql = `SELECT * from gift_card_245 where card_code="${card_code}"`
+    const _sql = `SELECT * from gift_card_245 where card_code="${card_code}";`
     return query(_sql)
 }
 
