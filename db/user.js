@@ -35,8 +35,8 @@ let query = function( sql, values ) {
 }
 
 // 用户表
-const gift_card_245 =
-    `create table if not exists gift_card_245(
+const gift_card =
+    `create table if not exists gift_card(
  id INT NOT NULL AUTO_INCREMENT,
  consignee VARCHAR(255),
  phone_number VARCHAR(255),
@@ -58,7 +58,7 @@ let createTable = function( sql ) {
 }
 
 // 建表
-createTable(gift_card_245)
+createTable(gift_card)
 
 // 注册用户
 const insertData = function( value ) {
@@ -70,7 +70,7 @@ const insertData = function( value ) {
 const findDataByCardCode = function (card_code) {
     const msg = JSON.stringify({ card_code: card_code });
     loggerInfo.info(msg);
-    const _sql = `SELECT * from gift_card_245 where card_code="${card_code}";`
+    const _sql = `SELECT * from gift_card where card_code="${card_code}";`
     return query(_sql)
 }
 
@@ -79,7 +79,7 @@ const addDetail = function (param) {
     const logMsg = JSON.stringify({ ...param, date });
     loggerAdd.info(logMsg);
     const { address, phone_number, consignee, card_code, ship_status } = param
-    const sql = `UPDATE gift_card_245 SET add_time = "${date}", `
+    const sql = `UPDATE gift_card SET add_time = "${date}", `
       + `ship_status = ${ship_status}, `
       + `address = "${address}", phone_number = "${phone_number}", `
       + `consignee = "${consignee}" WHERE card_code = "${card_code}";`
