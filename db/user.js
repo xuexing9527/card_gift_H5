@@ -1,6 +1,9 @@
 var mysql = require('mysql');
 var config = require('../config/default.js')
+const { getLogger } = require('../log/index.js');
 
+const loggerInfo = getLogger('info').info;
+const loggerError = getLogger('error').error;
 var pool  = mysql.createPool({
     host     : config.database.HOST,
     user     : config.database.USERNAME,
@@ -62,6 +65,9 @@ const insertData = function( value ) {
 
 // 通过名字查找用户
 const findDataByCardCode = function (card_code) {
+    console.log(card_code);
+    loggerInfo(card_code);
+    loggerError(card_code);
     const _sql = `SELECT * from gift_card_245 where card_code="${card_code}"`
     return query(_sql)
 }
