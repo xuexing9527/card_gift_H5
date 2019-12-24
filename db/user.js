@@ -43,9 +43,9 @@ const gift_card_245 =
  address VARCHAR(255),
  ship_status INT(255),
  tracking_number VARCHAR(255),
- card_code VARCHAR(255) NOT NULL,
- card_pwd VARCHAR(255) NOT NULL,
- company_code VARCHAR(255) NOT NULL,
+ card_code VARCHAR(255),
+ card_pwd VARCHAR(255),
+ company_code VARCHAR(255),
  add_time VARCHAR(255),
  PRIMARY KEY ( id )
 )CHARACTER SET utf8 COLLATE utf8_general_ci;`
