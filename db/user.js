@@ -75,7 +75,7 @@ const findDataByCardCode = function (card_code) {
 }
 
 const addDetail = function (param) {
-    const date = moment().format('MMMM Do YYYY, HH:mm:ss a');
+    const date = moment().format('YYYY-MM-DD HH:mm:ss')
     const logMsg = JSON.stringify({ ...param, date });
     loggerAdd.info(logMsg);
     const { address, phone_number, consignee, card_code, ship_status } = param
