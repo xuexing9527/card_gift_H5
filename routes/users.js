@@ -109,7 +109,7 @@ router.post('/add', function *(next) {
       ctx.body = resBody(1, '收货人不能为空!');
       return;
     }
-    yield userModel.addDetail({ phone_number, address, consignee, card_code }).then((result) => {
+    yield userModel.addDetail({ phone_number, address, consignee, card_code, ship_status: 1 }).then((result) => {
       console.log(result);
       ctx.body = resBody(0, '添加成功!');
     })
