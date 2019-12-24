@@ -1,9 +1,11 @@
 var mysql = require('mysql');
 var config = require('../config/default.js')
 const { getLogger } = require('../log/index.js');
+const moment = require('moment');
 
-const loggerInfo = getLogger('info').info;
-const loggerError = getLogger('error').error;
+const loggerInfo = getLogger('info');
+const loggerError = getLogger('error');
+const loggerAdd = getLogger('add');
 var pool  = mysql.createPool({
     host     : config.database.HOST,
     user     : config.database.USERNAME,
@@ -44,6 +46,7 @@ const gift_card_245 =
  card_code VARCHAR(255) NOT NULL,
  card_pwd VARCHAR(255) NOT NULL,
  company_code VARCHAR(255) NOT NULL,
+ add_time VARCHAR(255) NOT NULL,
  PRIMARY KEY ( id )
 )CHARACTER SET utf8 COLLATE utf8_general_ci;`
 
@@ -65,16 +68,22 @@ const insertData = function( value ) {
 
 // 通过名字查找用户
 const findDataByCardCode = function (card_code) {
-    console.log(card_code);
-    loggerInfo(card_code);
-    loggerError(card_code);
+    const msg = JSON.stringify({ card_code: card_code });
+    loggerInfo.info(msg);
+    loggerError.error(card_code);
     const _sql = `SELECT * from gift_card_245 where card_code="${card_code}"`
     return query(_sql)
 }
 
 const addDetail = function (param) {
+    const date = moment().format('MMMM Do YYYY, HH:mm:ss a');
+    const logMsg = JSON.stringify({ ...param, date });
+    loggerAdd.info(logMsg);
     const { address, phone_number, consignee, card_code, ship_status } = param
-    const sql = `UPDATE gift_card_245 SET ship_status = "${ship_status}", address = "${address}", phone_number = "${phone_number}", consignee = "${consignee}" WHERE card_code = "${card_code}";`
+    const sql = `UPDATE gift_card_245 SET add_time = "${date}", `
+      + `ship_status = "${ship_status}", `
+      + `address = "${address}", phone_number = "${phone_number}", `
+      + `consignee = "${consignee}" WHERE card_code = "${card_code}";`
     return query(sql)
 }
 

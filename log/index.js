@@ -7,10 +7,10 @@ log4js.configure({
     stdout: {//控制台输出
       type: 'console'
     },
-    trace: {
+    add: {
       type: 'dateFile',
-      filename: 'logs/trace/',
-      pattern: 'trace-yyyy-MM-dd.log',
+      filename: 'logs/add/',
+      pattern: 'add-yyyy-MM-dd.log',
       alwaysIncludePattern: true
     },
     debug: {
@@ -45,7 +45,7 @@ log4js.configure({
     },
   },
   categories: {
-    trace: { appenders: ['stdout', 'trace'], level: 'trace' }, //appenders:采用的appender,取appenders项,level:设置级别
+    add: { appenders: ['stdout', 'info'], level: 'info' }, //appenders:采用的appender,取appenders项,level:设置级别
     debug: { appenders: ['stdout', 'debug'], level: 'debug' },
     default: { appenders: ['stdout', 'info'], level: 'info' },
     warn: { appenders: ['stdout', 'warn'], level: 'warn' },
