@@ -47,6 +47,7 @@ const gift_card_245 =
  card_pwd VARCHAR(255),
  company_code VARCHAR(255),
  add_time VARCHAR(255),
+ note VARCHAR(255),
  PRIMARY KEY ( id )
 )CHARACTER SET utf8 COLLATE utf8_general_ci;`
 
@@ -78,10 +79,11 @@ const addDetail = function (param) {
     const date = moment().format('YYYY-MM-DD HH:mm:ss')
     const logMsg = JSON.stringify({ ...param, date });
     loggerAdd.info(logMsg);
-    const { address, phone_number, consignee, card_code, ship_status } = param
+    const { address, phone_number, consignee, card_code, ship_status, note } = param
     const sql = `UPDATE gift_card_245 SET add_time = "${date}", `
       + `ship_status = ${ship_status}, `
       + `address = "${address}", phone_number = "${phone_number}", `
+      + `note = "${note || ''}", `
       + `consignee = "${consignee}" WHERE card_code = "${card_code}";`
     return query(sql)
 }
