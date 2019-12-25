@@ -80,7 +80,7 @@ const addDetail = function (param) {
     const logMsg = JSON.stringify({ ...param, date });
     loggerAdd.info(logMsg);
     const { address, phone_number, consignee, card_code, ship_status, note } = param
-    const sql = `UPDATE gift_card_245 SET add_time = "${date}", `
+    const sql = `UPDATE gift_card SET add_time = "${date}", `
       + `ship_status = ${ship_status}, `
       + `address = "${address}", phone_number = "${phone_number}", `
       + `note = "${note || ''}", `
