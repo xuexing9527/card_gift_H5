@@ -71,7 +71,15 @@ const insertData = function( value ) {
 const findDataByCardCode = function (card_code) {
     const msg = JSON.stringify({ card_code: card_code });
     loggerInfo.info(msg);
-    const _sql = `SELECT card_code from gift_card where card_code="${card_code}";`
+    const _sql = `SELECT * from gift_card where card_code="${card_code}";`
+    return query(_sql)
+}
+
+// 通过名字查找用户
+const loginByCardCode = function (card_code) {
+    const msg = JSON.stringify({ card_code: card_code });
+    loggerInfo.info(msg);
+    const _sql = `SELECT card_code, card_pwd, company_code from gift_card where card_code="${card_code}";`
     return query(_sql)
 }
 
@@ -94,4 +102,5 @@ module.exports={
     findDataByCardCode,
     insertData,
     addDetail,
+    loginByCardCode
 }

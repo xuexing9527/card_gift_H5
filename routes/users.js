@@ -38,7 +38,7 @@ router.post('/login', function *(next) {
         return
     }
 
-    yield userModel.findDataByCardCode(card_code).then((result) => {
+    yield userModel.loginByCardCode(card_code).then((result) => {
         // console.log(result)
         console.log(result[0])
         if (!result.length) {
