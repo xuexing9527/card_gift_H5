@@ -71,7 +71,7 @@ const insertData = function( value ) {
 const findDataByCardCode = function (card_code) {
     const msg = JSON.stringify({ card_code: card_code });
     loggerInfo.info(msg);
-    const _sql = `SELECT * from gift_card where card_code="${card_code}";`
+    const _sql = `SELECT card_code from gift_card where card_code="${card_code}";`
     return query(_sql)
 }
 
