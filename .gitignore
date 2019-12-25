@@ -2,3 +2,5 @@
 /.idea
 /logs
 /config
+/bin/logs
+package-lock.json
