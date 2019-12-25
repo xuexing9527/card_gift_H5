@@ -95,7 +95,7 @@ router.post('/add', function *(next) {
   const info = jwt.decode(token)
   if (token && info) {
     const { card_code } = info;
-    const { phone_number, address, consignee } = ctx.request.body;
+    const { phone_number, address, consignee, note } = ctx.request.body;
     // 校验
     if (!phone_number) {
       ctx.body = resBody(1, '手机号不能为空!');
@@ -109,7 +109,7 @@ router.post('/add', function *(next) {
       ctx.body = resBody(1, '收货人不能为空!');
       return;
     }
-    yield userModel.addDetail({ phone_number, address, consignee, card_code, ship_status: 1 }).then((result) => {
+    yield userModel.addDetail({ phone_number, address, consignee, card_code, note, ship_status: 1 }).then((result) => {
       console.log(result);
       ctx.body = resBody(0, '添加成功!');
     })
